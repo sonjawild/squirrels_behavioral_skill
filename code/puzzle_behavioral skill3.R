@@ -133,6 +133,10 @@ range(table(solving_data$Subject))
 10
 526
 
+# standard deviation
+sd(as.numeric(table(solving_data$Subject)))
+151.61
+
 length(solving_data$lever_side)
 1908
 
