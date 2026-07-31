@@ -49,3 +49,6 @@ Model summaries (as presented in SI)
 
 ## Folder: Figures output
 Figures as presented in the MS and SI (fully reproducible with the provided R code)
+
+## Folder: model output
+contains R Data objects of all five models with the two inclusion criteria (10 and 5)
