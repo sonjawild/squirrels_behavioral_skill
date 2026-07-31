@@ -1,4 +1,4 @@
-#### Boldness predicts skill refinement in a novel foraging task in wild squirrels ####
+#### Boldness shapes skill refinement in a novel foraging task in wild squirrels ####
 
 ## Sonja Wild, Lucy M. Todd, Lupin M. Teles, Andrew Sih, Jennifer E. Smith ##
 
