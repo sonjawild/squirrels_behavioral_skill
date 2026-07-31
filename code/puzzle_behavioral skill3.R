@@ -1,3 +1,7 @@
+#### Boldness predicts skill refinement in a novel foraging task in wild squirrels ####
+
+## Sonja Wild, Lucy M. Todd, Lupin M. Teles, Andrew Sih, Jennifer E. Smith ##
+
 
 # 1) Load libraries -------------------------------------------------------
 
@@ -22,7 +26,7 @@ library(flextable)
 library(officer)
 
 
-# 2) Read data ------------------------------------------------------------
+# 2) Read and prep data ------------------------------------------------------------
 setwd("C:/Users/sonja/Desktop/Ground Squirrels/Behavioral skill/git/squirrels_behavioral_skill")
 
 # each row is one solve
@@ -42,7 +46,7 @@ subject_data <- read.csv("Data/Subject_data.csv")
 
 # we want to calculate a boldness score consisting of individuals' trappability and their propensity to show any fear responses in the trap (chatter, struggle, call)
 
-# run pca on behaviors
+# run pca on trap behavior and trappabilty
 
 bh_data_scaled <- scale(subject_data[,c("any_beh_prop", "trap_rate_per_day")])
 
@@ -78,8 +82,6 @@ pca_bh$loadings
 # Extract scores and loadings
 scores <- pca_bh$scores
 loadings <- pca_bh$loadings[,1:2]
-
-
 
 
 # add the scores to our subject data as boldness
@@ -290,6 +292,7 @@ table(solving_data$con_pres)
 
 # in 15% of solves, a conspecific was present
 
+
 # 4) Skill improvement  with increasing experience  -------------------------------------------------
 
 # 4.1) Does behavioral type influence success rate over time? -------------------------------------------------------------------
@@ -360,7 +363,7 @@ model_success <- brm(
 
 #save(model_success, file="model output/model_success.RDA")
 load("model output/model_success.RDA")
-#load("model output/model_success_min5.RDA") # load this object for the treshold of 5 visits or 5 solves
+#load("model output/model_success_min5.RDA") # load this object for the threshold of 5 visits or 5 solves
 
 
 # check for model fit
@@ -1409,85 +1412,6 @@ get_preds <- function(model, beh_values) {
 df_paw_choice <- get_preds(model_eff_paw, beh.type.q)
 
 
-
-
-# # Generate conditional effects for each value
-# pred_list <- lapply(beh.type.q, function(x) {
-#   ce <- conditional_effects(
-#     model_eff_paw,
-#     effects = "log_cumulative_count_sc",
-#     conditions = list(beh_type = x), 
-#     categorical=T
-#   )
-#   # Extract the data for 'solved' outcome (or whichever outcome you want)
-#   df <- ce$log_cumulative_count_sc
-#   df$beh_type_val <- x
-#   df
-# })
-# 
-# # Combine into one dataframe
-# df_combined <- bind_rows(pred_list)
-# 
-# # Optionally, label the percentiles for the legend
-# df_combined <- df_combined %>%
-#   mutate(beh_type_label = factor(beh_type_val,
-#                                  levels = beh.type.q,
-#                                  labels = c("Shy", "Medium", "Bold")))
-# 
-# # Plot all curves in one panel
-# p2.panel.a <- ggplot(df_combined, aes(x = log_cumulative_count_sc, y = estimate__, color = beh_type_label, fill = beh_type_label)) +
-#   geom_line(linewidth = 1.2) +
-#   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.2, color = NA) +
-#   theme_bw() +
-#   labs(
-#     x = "# cumulative solves (log)",
-#     y = "Probability of using \n ipsilateral paw",
-#     color = "Boldness",
-#     fill = "Boldness"
-#   ) +
-#   scale_color_manual(values = c("#fdd0a2","#fd8d3c", "#a63603" )) +
-#   scale_fill_manual(values = c("#fdd0a2","#fd8d3c", "#a63603" ))+
-#   theme(legend.position = "none")
-# 
-# 
-# # panel b:
-# 
-# # Generate conditional effects for each value
-# pred_list <- lapply(beh.type.q, function(x) {
-#   ce <- conditional_effects(
-#     model_eff_both,
-#     effects = "log_cumulative_count_sc",
-#     conditions = list(beh_type = x)
-#   )
-#   # Extract the data for 'solved' outcome (or whichever outcome you want)
-#   df <- ce$log_cumulative_count_sc
-#   df$beh_type_val <- x
-#   df
-# })
-# 
-# # Combine into one dataframe
-# df_combined <- bind_rows(pred_list)
-# 
-# # Optionally, label the percentiles for the legend
-# df_combined <- df_combined %>%
-#   mutate(beh_type_label = factor(beh_type_val,
-#                                  levels = beh.type.q,
-#                                  labels = c("Shy", "Medium", "Bold")))
-# 
-# # Plot all curves in one panel
-# p2.panel.b <- ggplot(df_combined, aes(x = log_cumulative_count_sc, y = estimate__, color = beh_type_label, fill = beh_type_label)) +
-#   geom_line(linewidth = 1.2) +
-#   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.2, color = NA) +
-#   theme_bw() +
-#   labs(
-#     x = "# cumulative solves (log)",
-#     y = "Probability of using \n both paws",
-#     color = "Boldness",
-#     fill = "Boldness"
-#   ) +
-#   scale_color_manual(values = c("#fdd0a2","#fd8d3c", "#a63603" )) +
-#   scale_fill_manual(values = c("#fdd0a2","#fd8d3c", "#a63603" ))+
-#   theme(legend.position = "none")
 
 # panel c:
 
