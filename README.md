@@ -5,6 +5,9 @@ contains R script to fully reproduce analysis, create tables and figures
 
 ## Folder: Data
 
+Note that for each file there are two versions - one with an inclusion criterion of 10 visits and/or 10 solves, respectively, which was used for the main analysis. 
+The second set has an inclusion criterion of 5 visits and/or 5 solves (all files have the addition _min5) in the file name. Since colummn names in both are the same, we will list them here only once:
+
 Visits data: each row represents one distinct to a puzzle box
 - Subject: Individual identifier for each squirrel
 - Cumulative_visits: # of cumulative visits to any puzzle box
@@ -14,6 +17,7 @@ Visits data: each row represents one distinct to a puzzle box
 - Total_time_present: visit duration in s
 - age: A for adult, P for juveniles
 - sex: F for female, M for male
+- con_pres: 0 for no other squirrel present upon arrival, 1 for conspecific(s) present at the box upon arrival
 - log_cumulative_visits: log # of cumulative visits
 
 Combined data: each row represents one solve
@@ -26,6 +30,7 @@ Combined data: each row represents one solve
 - log_cuulative_count = log # of cumulative individual solves
 - box_between_solves = how many times did the squirrel (unsuccessfully) interact with the puzzle box (sniffing, touching) in between solves
 - paw_comb = which paw did they use in relation to the lever (ipsi = left paw on left lever, or right paw on right lever; contra = righ paw on left lever or left paw on right lever; both = both paws on same side of lever)
+- con_pres: 0 for no other squirrel present during a solve, 1 for conspecific(s) present at the box during a solve
 
 Subject_data: Individual co-variates
 - Subject: Unqiue identifier for each squirrel
