@@ -3,10 +3,10 @@
 ## Folder: Code
 contains R script to fully reproduce analysis, create tables and figures
 
-## Folder: Data
+## Folder: Data2
 
 Note that for each file there are two versions - one with an inclusion criterion of 10 visits and/or 10 solves, respectively, which was used for the main analysis. 
-The second set has an inclusion criterion of 5 visits and/or 5 solves (all files have the addition _min5) in the file name. Since colummn names in both are the same, we will list them here only once:
+The second set has an inclusion criterion of 5 visits and/or 5 solves (all files have the addition _5) in the file name. Since colummn names in both are the same, we will list them here only once:
 
 Visits data: each row represents one distinct to a puzzle box
 - Subject: Individual identifier for each squirrel
