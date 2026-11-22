@@ -1,4 +1,4 @@
-# Boldness shapes skill refinement in a novel foraging task in wild squirrels
+# Boldness shapes behavioral skill refinement in a novel foraging task in wild squirrels
 
 ## Folder: Code
 contains R script to fully reproduce analysis, create tables and figures
