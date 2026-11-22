@@ -30,18 +30,18 @@ library(officer)
 setwd("C:/Users/sonja/Desktop/Ground Squirrels/Behavioral skill/git/squirrels_behavioral_skill")
 
 # each row is one solve
-solving_data <- read.csv("Data/combined.data.csv")
+solving_data <- read.csv("Data2/combined.data.csv")
 # to repeat the analysis with a threshold of 5 solves (instead of 10), uncomment the respective lines that read in the data. The rest remains the same
-#solving_data <- read.csv("Data/combined.data_min5.csv")
+#solving_data <- read.csv("Data2/combined.data_5.csv")
 
 
 # each row is one visit
-visit_data <- read.csv("Data/visits.data.csv")
-#visit_data <- read.csv("Data/visits.data_min5.csv")
+visit_data <- read.csv("Data2/visits.data.csv")
+#visit_data <- read.csv("Data2/visits.data_5.csv")
 
 # this contains the individual level data - each row is one individual
-subject_data <- read.csv("Data/Subject_data.csv")
-#subject_data <- read.csv("Data/Subject_data_min5.csv")
+subject_data <- read.csv("Data2/Subject_data.csv")
+#subject_data <- read.csv("Data2/Subject_data_5.csv")
 
 
 # we want to calculate a boldness score consisting of individuals' trappability and their propensity to show any fear responses in the trap (chatter, struggle, call)
@@ -67,15 +67,15 @@ pca_bh$loadings
 
 # Loadings:
 #   PC1    PC2   
-# any_beh_prop      -0.838  0.546
-# trap_rate_per_day  0.838  0.546
+# trap behav.  -0.810  0.586
+# trappability  0.810  0.586
 # 
 # PC1   PC2
-# SS loadings    1.404 0.596
-# Proportion Var 0.702 0.298
-# Cumulative Var 0.702 1.000
+# SS loadings    1.313 0.687
+# Proportion Var 0.657 0.343
+# Cumulative Var 0.657 1.000
 
-# we can see that trap behavior and trappability load in opposite directions and account for 70.2% of the variance
+# we can see that trap behavior and trappability load in opposite directions and account for 65.7% of the variance
 
 
 # Increase margins to give labels room, especially on the right side
@@ -89,12 +89,12 @@ subject_data$beh_type <- pca_bh$scores[,1]
 
 cor(bh_data_scaled)
 
-#                     any_beh_prop trap_rate_per_day
-# any_beh_prop         1.0000000        -0.4039727
-# trap_rate_per_day   -0.4039727         1.0000000
+# trap behav. trappability
+# trap behav.    1.0000000   -0.3130662
+# trappability  -0.3130662    1.0000000
 
 range(subject_data$beh_type)
-# -2.484865  1.932444
+# -2.673573  2.064101
 
 mean(subject_data$beh_type)
 # subject_data$beh_type
@@ -116,7 +116,7 @@ visit_data <- left_join(
 
 # Make a combined figure with the distribution of boldness scores and the biplot
 
-tiff("Figures output/Boldness_PCA_combined.tiff", units = "in", width = 8, height = 4, res = 300, compression = 'lzw')
+tiff("Figures output/Boldness_PCA_combined2.tiff", units = "in", width = 8, height = 4, res = 300, compression = 'lzw')
 
 layout(matrix(c(1, 2), nrow = 1))
 
@@ -133,8 +133,8 @@ mtext("a", side = 3, line = 1, at = par("usr")[1] - diff(par("usr")[1:2]) * 0.17
 par(mar = c(5, 4, 4, 6) + 0.1)
 
 plot(scores[,1], scores[,2],
-     xlab = "PC1 (70.2% variance)",
-     ylab = "PC2 (29.8% variance)",
+     xlab = "PC1 (65.7% variance)",
+     ylab = "PC2 (34.3% variance)",
      main = "",
      pch = 19, col = "black",
      xlim = range(scores[,1]) * 1.2,
@@ -165,13 +165,13 @@ table(solving_data$body_part)
 
 # how many unique squirrels
 length(unique(subject_data$Subject))
-# 26 squirrels that have either visited the puzzle box 10 times or solved 10 times
+# 30 squirrels that have either visited the puzzle box 10 times or solved 10 times
 
 table(cbind.data.frame(subject_data$age, subject_data$sex))
 # subject_data$sex
 # subject_data$age F M
-# A 7 10
-# P 8 1
+# A 10 10
+# P 9 1
 
 # get the number of visits of each of those individuals
 max.visits <- visit_data %>%
@@ -206,8 +206,8 @@ summary_table <- left_join(summary_table, select(subject_data, c("Subject", "age
 table(select(summary_table, c( "age", "sex")))
 # sex
 # age  F  M
-# A  7 10
-# P  8  1
+# A  10 10
+# P  9  1
 
 summary_table %>%
   filter(min_10_visits == 1) %>%
@@ -215,8 +215,8 @@ summary_table %>%
   table()
 # sex
 # age  F  M
-# A  5 10
-# P  7  1
+# A 10 10
+# P  9  1
 
 
 summary_table %>%
@@ -239,7 +239,7 @@ summary_table %>%
   )
 
 # both only_visits only_solves neither
-# 1   15           8           3       0
+# 1   18          12           0       0
 
 
 mean(table(solving_data$Subject))
@@ -257,19 +257,19 @@ sd(as.numeric(table(solving_data$Subject)))
 
 # how many visits
 mean(table(visit_data$Subject))
-91.57692
+81.56667
 
 median(table(visit_data$Subject))
-41
+30
 
 sd(table(visit_data$Subject))
-99
+95.53793
 
 range(table(visit_data$Subject))
-#13 353
+#12 353
 
 sum(summary_table$max_visits)
-# 621 visits
+# 2447 visits
 
 sum(summary_table$n_solves)
 # 1908
@@ -287,10 +287,10 @@ table(solving_data$lever_side)
 # how many solving events where more than one squirrel was present
 
 table(solving_data$con_pres)
-# 1657 alone, 251 in presence of a conspecific
-251/1657
+# 1647 alone, 261 in presence of a conspecific
+261/1908
 
-# in 15% of solves, a conspecific was present
+# in 13.7% of solves, a conspecific was present
 
 
 # 4) Skill improvement  with increasing experience  -------------------------------------------------
@@ -337,18 +337,17 @@ check_collinearity(
 )
 
 
-# # Check for Multicollinearity
-# 
 # Low Correlation
 # 
 # Term  VIF   VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
-# log_cumulative_visits 1.14 [1.10, 1.21]     1.07      0.88     [0.83, 0.91]
-# beh_type 1.74 [1.65, 1.85]     1.32      0.57     [0.54, 0.61]
-# age 2.08 [1.96, 2.22]     1.44      0.48     [0.45, 0.51]
-# sex 2.08 [1.96, 2.21]     1.44      0.48     [0.45, 0.51]
-# log_training_solves 1.69 [1.60, 1.79]     1.30      0.59     [0.56, 0.62]
-# scale(total_time_present) 1.06 [1.03, 1.13]     1.03      0.94     [0.89, 0.97]
-# con_pres 1.12 [1.08, 1.18]     1.06      0.89     [0.84, 0.93]
+# log_cumulative_visits 1.17 [1.13, 1.23]     1.08      0.85     [0.81, 0.89]
+# beh_type 2.02 [1.90, 2.14]     1.42      0.50     [0.47, 0.53]
+# age 2.11 [1.99, 2.25]     1.45      0.47     [0.45, 0.50]
+# sex 2.01 [1.90, 2.14]     1.42      0.50     [0.47, 0.53]
+# log_training_solves 1.94 [1.83, 2.06]     1.39      0.52     [0.49, 0.55]
+# scale(total_time_present) 1.06 [1.03, 1.12]     1.03      0.94     [0.89, 0.97]
+# con_pres 1.04 [1.02, 1.12]     1.02      0.96     [0.90, 0.98]
+
 
 model_success <- brm(  
   success ~ log_cumulative_visits*beh_type + age + sex + log_training_solves + scale(total_time_present) + con_pres + (1 | Subject), 
@@ -361,9 +360,9 @@ model_success <- brm(
   control = list(adapt_delta = 0.95)
 )
 
-#save(model_success, file="model output/model_success.RDA")
-load("model output/model_success.RDA")
-#load("model output/model_success_min5.RDA") # load this object for the threshold of 5 visits or 5 solves
+#save(model_success, file="model output/model_success2.RDA")
+load("model output/model_success2.RDA")
+#load("model output/model_success_5.RDA") # load this object for the threshold of 5 visits or 5 solves
 
 
 # check for model fit
@@ -377,47 +376,47 @@ summary(model_success)
 
 # Family: categorical 
 # Links: munoyes = logit; muyesno = logit; muyesyes = logit 
-# Formula: success ~ log_cumulative_visits * beh_type + age + sex + log_training_solves + scale(total_time_present) + con_pres + (1 | Subject) 
-# Data: visit_data_success (Number of observations: 2313) 
+# Formula: success ~ log_cumulative_visits_c * beh_type + age + sex + log_training_solves + scale(total_time_present) + con_pres + (1 | Subject) 
+# Data: visit_data_success (Number of observations: 2447) 
 # Draws: 4 chains, each with iter = 4000; warmup = 2000; thin = 1;
 # total post-warmup draws = 8000
 # 
 # Multilevel Hyperparameters:
-#   ~Subject (Number of levels: 23) 
+#   ~Subject (Number of levels: 30) 
 # Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sd(munoyes_Intercept)      0.49      0.17     0.22     0.91 1.00     2523     4573
-# sd(muyesno_Intercept)      0.78      0.26     0.36     1.39 1.00     2714     4563
-# sd(muyesyes_Intercept)     1.00      0.26     0.61     1.61 1.00     4058     5080
+# sd(munoyes_Intercept)      0.51      0.15     0.25     0.85 1.00     2750     4454
+# sd(muyesno_Intercept)      0.78      0.23     0.40     1.30 1.00     2631     4511
+# sd(muyesyes_Intercept)     1.16      0.27     0.74     1.78 1.00     2971     4434
 # 
 # Regression Coefficients:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# munoyes_Intercept                          -0.74      0.28    -1.30    -0.21 1.00     4972     4834
-# muyesno_Intercept                          -1.49      0.42    -2.37    -0.69 1.00     4292     4444
-# muyesyes_Intercept                         -0.80      0.48    -1.75     0.18 1.00     4012     4568
-# munoyes_log_cumulative_visits               0.13      0.07    -0.02     0.27 1.00     8983     7102
-# munoyes_beh_type                            0.07      0.15    -0.22     0.38 1.00     5743     5003
-# munoyes_ageP                                0.11      0.39    -0.66     0.89 1.00     5212     5445
-# munoyes_sexM                                0.03      0.34    -0.65     0.68 1.00     4947     5385
-# munoyes_log_training_solves                 0.00      0.07    -0.14     0.14 1.00     5082     5015
-# munoyes_scaletotal_time_present             1.57      0.13     1.31     1.83 1.00     9542     6728
-# munoyes_con_pres1                           0.06      0.13    -0.19     0.30 1.00    11953     6303
-# munoyes_log_cumulative_visits:beh_type      0.00      0.05    -0.10     0.11 1.00    10570     6412
-# muyesno_log_cumulative_visits               0.16      0.10    -0.03     0.35 1.00    10110     6001
-# muyesno_beh_type                            0.03      0.23    -0.43     0.46 1.00     4827     4715
-# muyesno_ageP                                0.33      0.59    -0.78     1.57 1.00     3911     4125
-# muyesno_sexM                                0.12      0.50    -0.84     1.16 1.00     4385     4287
-# muyesno_log_training_solves                 0.05      0.11    -0.15     0.29 1.00     4471     5073
-# muyesno_scaletotal_time_present            -0.45      0.26    -0.99     0.05 1.00    14835     5936
-# muyesno_con_pres1                          -0.76      0.18    -1.13    -0.41 1.00    14656     5158
-# muyesno_log_cumulative_visits:beh_type     -0.04      0.07    -0.19     0.10 1.00    11008     6559
-# muyesyes_log_cumulative_visits              0.38      0.07     0.23     0.52 1.00    11220     6941
-# muyesyes_beh_type                           0.66      0.25     0.15     1.16 1.00     5027     5281
-# muyesyes_ageP                              -0.01      0.70    -1.41     1.36 1.00     4134     4809
-# muyesyes_sexM                               0.12      0.60    -1.10     1.27 1.00     4081     4852
-# muyesyes_log_training_solves                0.11      0.13    -0.14     0.37 1.00     4428     4917
-# muyesyes_scaletotal_time_present            1.92      0.14     1.66     2.19 1.00     9555     6807
-# muyesyes_con_pres1                         -0.63      0.15    -0.93    -0.33 1.00    13864     6212
-# muyesyes_log_cumulative_visits:beh_type    -0.10      0.06    -0.21     0.01 1.00    12823     6248
+# munoyes_Intercept                            -0.54      0.26    -1.07    -0.04 1.00     4150     4676
+# muyesno_Intercept                            -1.71      0.39    -2.51    -0.98 1.00     3509     4077
+# muyesyes_Intercept                           -0.10      0.49    -1.05     0.87 1.00     3104     4102
+# munoyes_log_cumulative_visits_c               0.33      0.07     0.20     0.46 1.00     7010     6584
+# munoyes_beh_type                              0.21      0.14    -0.06     0.49 1.00     4850     5269
+# munoyes_ageP                                  0.25      0.39    -0.55     1.04 1.00     4061     4511
+# munoyes_sexM                                 -0.03      0.31    -0.64     0.61 1.00     4521     5200
+# munoyes_log_training_solves                  -0.02      0.07    -0.17     0.11 1.00     4058     4949
+# munoyes_scaletotal_time_present               1.81      0.13     1.55     2.08 1.00     6250     5784
+# munoyes_con_pres1                             0.05      0.12    -0.19     0.28 1.00    11695     6699
+# munoyes_log_cumulative_visits_c:beh_type     -0.13      0.05    -0.23    -0.03 1.00     9504     6703
+# muyesno_log_cumulative_visits_c               0.11      0.08    -0.06     0.27 1.00     8607     6275
+# muyesno_beh_type                              0.08      0.21    -0.37     0.48 1.00     3571     4349
+# muyesno_ageP                                  0.58      0.56    -0.50     1.75 1.00     3245     3919
+# muyesno_sexM                                  0.23      0.45    -0.61     1.14 1.00     3588     4580
+# muyesno_log_training_solves                   0.01      0.11    -0.20     0.22 1.00     3489     4024
+# muyesno_scaletotal_time_present              -0.34      0.26    -0.86     0.15 1.00    10887     6150
+# muyesno_con_pres1                            -0.69      0.17    -1.02    -0.35 1.00    12680     6279
+# muyesno_log_cumulative_visits_c:beh_type     -0.15      0.07    -0.28    -0.02 1.00     9960     6308
+# muyesyes_log_cumulative_visits_c              0.87      0.09     0.70     1.04 1.00     9398     6265
+# muyesyes_beh_type                             1.13      0.27     0.61     1.70 1.00     3376     4447
+# muyesyes_ageP                                -0.46      0.77    -2.02     1.02 1.00     2910     3784
+# muyesyes_sexM                                -0.13      0.61    -1.37     1.08 1.00     3420     4193
+# muyesyes_log_training_solves                 -0.05      0.14    -0.33     0.23 1.00     2983     4158
+# muyesyes_scaletotal_time_present              2.18      0.14     1.91     2.46 1.00     6081     5401
+# muyesyes_con_pres1                           -0.55      0.15    -0.84    -0.26 1.00    12580     6804
+# muyesyes_log_cumulative_visits_c:beh_type    -0.13      0.06    -0.26    -0.01 1.00     9390     5831
 # 
 # Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 # and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -429,33 +428,49 @@ plot.success <- plot(conditional_effects(model_success, categorical = T))
 exp(fixef(model_success))
 
 
-# munoyes_Intercept                       0.4770008  1.318951 0.2733845 0.8085090
-# muyesno_Intercept                       0.2260418  1.516852 0.0938127 0.4999519
-# muyesyes_Intercept                      0.4511360  1.621072 0.1737743 1.1912929
-# munoyes_log_cumulative_visits           1.1353100  1.073434 0.9847879 1.3044353
-# munoyes_beh_type                        1.0764644  1.163135 0.8039153 1.4694206
-# munoyes_ageP                            1.1146607  1.475684 0.5145592 2.4460178
-# munoyes_sexM                            1.0344404  1.399078 0.5202196 1.9672613
-# munoyes_log_training_solves             1.0036476  1.073350 0.8653437 1.1482712
-# munoyes_scaletotal_time_present         4.8060230  1.140984 3.7148124 6.2523595
-# munoyes_con_pres1                       1.0573372  1.134706 0.8236954 1.3508489
-# munoyes_log_cumulative_visits:beh_type  1.0034074  1.056112 0.9028356 1.1175733
-# muyesno_log_cumulative_visits           1.1694921  1.100436 0.9661681 1.4162666
-# muyesno_beh_type                        1.0319202  1.253884 0.6536332 1.5896565
-# muyesno_ageP                            1.3923113  1.812364 0.4576248 4.7876513
-# muyesno_sexM                            1.1319646  1.644876 0.4314722 3.1947061
-# muyesno_log_training_solves             1.0561846  1.115389 0.8622559 1.3331478
-# muyesno_scaletotal_time_present         0.6351516  1.300912 0.3734222 1.0510601
-# muyesno_con_pres1                       0.4659120  1.198018 0.3241729 0.6652415
-# muyesno_log_cumulative_visits:beh_type  0.9590255  1.077027 0.8273760 1.1106517
-# muyesyes_log_cumulative_visits          1.4601000  1.077505 1.2590422 1.6859168
-# muyesyes_beh_type                       1.9379316  1.288014 1.1628384 3.1842676
-# muyesyes_ageP                           0.9880676  2.015512 0.2438690 3.9029168
-# muyesyes_sexM                           1.1262097  1.814949 0.3313329 3.5574296
-# muyesyes_log_training_solves            1.1144785  1.136277 0.8671040 1.4481357
-# muyesyes_scaletotal_time_present        6.8231813  1.144934 5.2599543 8.9401782
-# muyesyes_con_pres1                      0.5328252  1.163979 0.3948218 0.7158780
-# muyesyes_log_cumulative_visits:beh_type 0.9081172  1.057423 0.8130097 1.0144784
+# munoyes_Intercept                         0.5802885  1.296671 0.34421163  0.9627952
+# muyesno_Intercept                         0.1808215  1.474627 0.08149168  0.3745628
+# muyesyes_Intercept                        0.9010209  1.628787 0.34932656  2.3766656
+# munoyes_log_cumulative_visits_c           1.3883757  1.068188 1.21992441  1.5848014
+# munoyes_beh_type                          1.2313049  1.149622 0.93820939  1.6267058
+# munoyes_ageP                              1.2786022  1.483849 0.57684247  2.8249240
+# munoyes_sexM                              0.9718385  1.368591 0.52701509  1.8441953
+# munoyes_log_training_solves               0.9765585  1.074205 0.84199208  1.1195322
+# munoyes_scaletotal_time_present           6.0973201  1.142469 4.72132738  7.9690185
+# munoyes_con_pres1                         1.0473261  1.132584 0.82404559  1.3283975
+# munoyes_log_cumulative_visits_c:beh_type  0.8793612  1.052679 0.79493992  0.9701812
+# muyesno_log_cumulative_visits_c           1.1113402  1.085863 0.94604187  1.3108631
+# muyesno_beh_type                          1.0866866  1.235915 0.69265089  1.6172624
+# muyesno_ageP                              1.7818281  1.757025 0.60440570  5.7829090
+# muyesno_sexM                              1.2528469  1.569182 0.54219814  3.1162725
+# muyesno_log_training_solves               1.0055815  1.111814 0.82159297  1.2514941
+# muyesno_scaletotal_time_present           0.7100485  1.296088 0.42138783  1.1644969
+# muyesno_con_pres1                         0.5024574  1.185288 0.36112780  0.7016653
+# muyesno_log_cumulative_visits_c:beh_type  0.8637158  1.068673 0.75589697  0.9796196
+# muyesyes_log_cumulative_visits_c          2.3803859  1.090996 2.01043559  2.8295045
+# muyesyes_beh_type                         3.1093435  1.314194 1.83530103  5.4787021
+# muyesyes_ageP                             0.6330642  2.156004 0.13278335  2.7702426
+# muyesyes_sexM                             0.8745125  1.847215 0.25389351  2.9362469
+# muyesyes_log_training_solves              0.9476888  1.149725 0.72200103  1.2566384
+# muyesyes_scaletotal_time_present          8.8196364  1.149317 6.77472554 11.7035225
+# muyesyes_con_pres1                        0.5767238  1.159215 0.42966299  0.7709858
+# muyesyes_log_cumulative_visits_c:beh_type 0.8763805  1.065457 0.77300411  0.9907792
+
+
+d  <- as_draws_df(model_success)
+b0 <- d$b_muyesyes_beh_type
+b1 <- d$`b_muyesyes_log_cumulative_visits_c:beh_type`
+sapply(c(1, 10, 50, 100, 353), function(v) {
+  x <- exp(b0 + b1 * (log(v) - cp))
+  c(visits = v, median = median(x), lo = quantile(x, .025), hi = quantile(x, .975))
+})
+
+# [,1]      [,2]      [,3]       [,4]       [,5]
+# visits    1.000000 10.000000 50.000000 100.000000 353.000000
+# median    5.229398  3.850193  3.106873   2.836153   2.400951
+# lo.2.5%   2.554678  2.207452  1.850815   1.682998   1.344848
+# hi.97.5% 10.814523  7.092700  5.511547   5.098350   4.448890
+
 
 # 4.2) Latency to first solve ---------------------------------------
 
@@ -482,12 +497,12 @@ check_collinearity(
 # Low Correlation
 # 
 # Term  VIF   VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
-# log_cumulative_visits 1.27 [1.18, 1.40]     1.13      0.79     [0.71, 0.85]
-# beh_type 2.07 [1.87, 2.32]     1.44      0.48     [0.43, 0.53]
-# age 2.16 [1.94, 2.42]     1.47      0.46     [0.41, 0.51]
-# sex 2.11 [1.90, 2.37]     1.45      0.47     [0.42, 0.53]
-# log_training_solves 2.08 [1.88, 2.34]     1.44      0.48     [0.43, 0.53]
-# con_pres 1.24 [1.15, 1.37]     1.11      0.81     [0.73, 0.87]
+# log_cumulative_visits 1.34 [1.23, 1.48]     1.16      0.75     [0.68, 0.81]
+# beh_type 2.18 [1.97, 2.45]     1.48      0.46     [0.41, 0.51]
+# age 2.21 [1.99, 2.49]     1.49      0.45     [0.40, 0.50]
+# sex 2.12 [1.91, 2.37]     1.45      0.47     [0.42, 0.52]
+# log_training_solves 2.10 [1.89, 2.36]     1.45      0.48     [0.42, 0.53]
+# con_pres 1.11 [1.05, 1.24]     1.05      0.90     [0.80, 0.95]
 
 
 # this only considers visits where solves have actually occurred
@@ -501,9 +516,9 @@ model_latency <- brm(
   control = list(adapt_delta = 0.95)
 )
 
-#save(model_latency, file="model output/model_latency.RDA")
-load("model output/model_latency.RDA")
-#load("model output/model_latency_min5.RDA") # load this model object for the threshold of 5
+#save(model_latency, file="model output/model_latency2.RDA")
+load("model output/model_latency2.RDA")
+#load("model output/model_latency_5.RDA") # load this model object for the threshold of 5
 
 
 pp_lat <- pp_check(model_latency)
@@ -514,8 +529,8 @@ r2_bayes(model_latency)
 
 # # Bayesian R2 with Compatibility Interval
 # 
-# Conditional R2: 0.182 (95% CI [0.139, 0.230])
-# Marginal R2: 0.152 (95% CI [0.051, 0.270])
+# Conditional R2: 0.184 (95% CI [0.136, 0.229])
+# Marginal R2: 0.186 (95% CI [0.077, 0.318])
 
 summary(model_latency)
 
@@ -529,22 +544,22 @@ summary(model_latency)
 # Multilevel Hyperparameters:
 #   ~Subject (Number of levels: 18) 
 # Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sd(Intercept)     0.56      0.15     0.33     0.91 1.00     2462     4440
+# sd(Intercept)     0.56      0.16     0.32     0.94 1.00     2433     3909
 # 
 # Regression Coefficients:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# Intercept                          2.68      0.45     1.82     3.58 1.00     3145     4020
-# log_cumulative_visits             -0.13      0.05    -0.22    -0.03 1.00     9184     6101
-# beh_type                           0.06      0.17    -0.27     0.41 1.00     4053     4592
-# ageP                               0.03      0.47    -0.89     0.95 1.00     3123     3845
-# sexM                               0.36      0.38    -0.40     1.12 1.00     3848     4623
-# log_training_solves               -0.01      0.09    -0.17     0.16 1.00     3073     3867
-# con_pres                          -0.26      0.11    -0.48    -0.04 1.00     8660     6035
-# log_cumulative_visits:beh_type    -0.13      0.03    -0.19    -0.06 1.00     8843     5681
+# Intercept                          2.99      0.51     1.97     3.99 1.00     3726     4788
+# log_cumulative_visits             -0.13      0.06    -0.24    -0.01 1.00     6561     6112
+# beh_type                           0.35      0.24    -0.11     0.84 1.00     3917     5085
+# ageP                              -0.08      0.48    -1.06     0.86 1.00     3606     4091
+# sexM                               0.28      0.38    -0.47     1.05 1.00     4238     4511
+# log_training_solves               -0.01      0.08    -0.18     0.16 1.00     3567     3960
+# con_pres                          -0.35      0.11    -0.56    -0.14 1.00    10988     6083
+# log_cumulative_visits:beh_type    -0.13      0.04    -0.22    -0.04 1.00     4853     4868
 # 
 # Further Distributional Parameters:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sigma     1.14      0.03     1.08     1.20 1.00     9867     5866
+# sigma     1.14      0.03     1.08     1.20 1.00    10775     5412
 # 
 # Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 # and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -557,6 +572,31 @@ plot.latency <- plot(conditional_effects(model_latency))
 # no effect of age, sex or training solves
 # bolder individuals decreased their latency to first solve faster than shy individuals
 
+d <- as_draws_df(model_latency)
+b_v <- d$b_log_cumulative_visits
+b_i <- d$`b_log_cumulative_visits:beh_type`
+sapply(c(risk_averse = -1, medium = 0, bold = 1), function(z) {
+  s <- b_v + b_i * z
+  c(median = median(s), lo = quantile(s, .025), hi = quantile(s, .975))
+})
+
+# risk_averse     medium       bold
+# median    0.0004321226 -0.1287323 -0.2588549
+# lo.2.5%  -0.1599411690 -0.2419271 -0.3765875
+# hi.97.5%  0.1674659556 -0.0140602 -0.1421233
+
+b_b <- d$b_beh_type
+cp <- mean(log(visit_data_latency$cumulative_visits))   # raw log visits (centering point)
+sapply(c(1, 10, 50), function(v) {
+  e <- b_b + b_i * (log(v) - cp)
+  c(visits = v, median = median(e), lo = quantile(e, .025), hi = quantile(e, .975))
+})
+
+# [,1]         [,2]        [,3]
+# visits   1.0000000 10.000000000 50.00000000
+# median   0.8842403  0.582205885  0.37515315
+# lo.2.5%  0.1175196  0.001493053 -0.09342937
+# hi.97.5% 1.7236167  1.228010838  0.89154106
 
 # 4.3) Motor flexibility - paw choice ----------------------
 
@@ -584,17 +624,20 @@ check_collinearity(
   lm( rep(1, nrow(solving_data)) ~  log_cumulative_count_sc + beh_type + age + sex + log_training_solves_sc + con_pres,
      data = solving_data)
 )
+
 # # Check for Multicollinearity
 # 
 # Low Correlation
 # 
 # Term  VIF   VIF 95% CI adj. VIF Tolerance Tolerance 95% CI
-# log_cumulative_count_sc 1.41 [1.34, 1.50]     1.19      0.71     [0.66, 0.75]
-# beh_type 2.24 [2.10, 2.41]     1.50      0.45     [0.42, 0.48]
-# age 2.28 [2.13, 2.45]     1.51      0.44     [0.41, 0.47]
-# sex 3.12 [2.90, 3.36]     1.77      0.32     [0.30, 0.35]
-# log_training_solves_sc 2.95 [2.74, 3.18]     1.72      0.34     [0.31, 0.37]
-# con_pres 1.07 [1.04, 1.15]     1.04      0.93     [0.87, 0.97]
+# log_cumulative_count_sc 1.41 [1.34, 1.50]     1.19      0.71     [0.67, 0.75]
+# beh_type 2.24 [2.09, 2.41]     1.50      0.45     [0.42, 0.48]
+# age 2.29 [2.14, 2.46]     1.51      0.44     [0.41, 0.47]
+# sex 3.15 [2.92, 3.40]     1.77      0.32     [0.29, 0.34]
+# log_training_solves_sc 2.96 [2.75, 3.19]     1.72      0.34     [0.31, 0.36]
+# con_pres 1.08 [1.04, 1.15]     1.04      0.93     [0.87, 0.96]
+
+
 
 # for vs ipsi vs contralateral paw
 model_eff_paw <- brm(  
@@ -608,10 +651,9 @@ model_eff_paw <- brm(
   control = list(adapt_delta = 0.95)
 )
 
-#save(model_eff_paw, file="model output/model_eff_paw.RDA")
-load("model output/model_eff_paw.RDA")
+#save(model_eff_paw, file="model output/model_eff_paw2.RDA")
+load("model output/model_eff_paw2.RDA")
 #load("model output/model_eff_paw_min5.RDA") # load this for the results of threshold of 5
-
 
 
 pp_eff <- pp_check(model_eff_paw)
@@ -631,32 +673,31 @@ summary(model_eff_paw)
 # Multilevel Hyperparameters:
 #   ~Subject (Number of levels: 18) 
 # Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sd(mucontra_Intercept)     1.56      0.44     0.88     2.60 1.00     3836     5236
-# sd(muipsi_Intercept)       1.23      0.31     0.76     1.98 1.00     4036     4935
+# sd(mucontra_Intercept)     1.62      0.46     0.93     2.73 1.00     3801     5193
+# sd(muipsi_Intercept)       1.25      0.32     0.77     2.02 1.00     3201     4743
 # 
 # Regression Coefficients:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# mucontra_Intercept                           -1.29      0.76    -2.86     0.19 1.00     4931     5018
-# muipsi_Intercept                              0.50      0.59    -0.66     1.69 1.00     4936     5241
-# mucontra_log_cumulative_count_sc             -0.77      0.15    -1.05    -0.48 1.00     7051     6762
-# mucontra_beh_type                            -0.68      0.53    -1.71     0.42 1.00     6186     4566
-# mucontra_ageP                                -1.39      1.33    -4.09     1.25 1.00     4477     4583
-# mucontra_sexM                                 0.95      1.03    -1.09     3.00 1.00     4965     5210
-# mucontra_log_training_solves_sc               0.11      0.76    -1.46     1.59 1.00     4859     4910
-# mucontra_con_pres1                           -0.78      0.28    -1.36    -0.24 1.00    12213     6191
-# mucontra_log_cumulative_count_sc:beh_type     0.54      0.15     0.25     0.84 1.00     7418     6602
-# muipsi_log_cumulative_count_sc               -0.80      0.13    -1.06    -0.56 1.00     6355     6862
-# muipsi_beh_type                              -0.66      0.41    -1.45     0.16 1.00     5339     4995
-# muipsi_ageP                                  -1.77      1.04    -3.88     0.23 1.00     4609     4816
-# muipsi_sexM                                   0.28      0.80    -1.31     1.84 1.00     5199     4299
-# muipsi_log_training_solves_sc                -0.12      0.58    -1.28     1.03 1.00     4808     4999
-# muipsi_con_pres1                             -0.40      0.17    -0.74    -0.07 1.00    13684     5215
-# muipsi_log_cumulative_count_sc:beh_type       0.14      0.12    -0.08     0.37 1.00     6440     6764
+# mucontra_Intercept                           -1.26      0.79    -2.89     0.23 1.00     5232     5705
+# muipsi_Intercept                              0.52      0.61    -0.71     1.69 1.00     5034     5158
+# mucontra_log_cumulative_count_sc             -0.84      0.15    -1.14    -0.55 1.00     7063     6653
+# mucontra_beh_type                            -0.50      0.45    -1.36     0.40 1.00     5593     5052
+# mucontra_ageP                                -1.49      1.42    -4.47     1.22 1.00     4680     5069
+# mucontra_sexM                                 0.94      1.04    -1.09     3.02 1.00     5716     5425
+# mucontra_log_training_solves_sc               0.07      0.79    -1.58     1.62 1.00     4927     4632
+# mucontra_con_pres1                           -0.83      0.29    -1.43    -0.28 1.00    11880     6278
+# mucontra_log_cumulative_count_sc:beh_type     0.48      0.12     0.24     0.73 1.00     6603     6043
+# muipsi_log_cumulative_count_sc               -0.86      0.14    -1.13    -0.59 1.00     5247     5945
+# muipsi_beh_type                              -0.51      0.34    -1.17     0.15 1.00     5589     5239
+# muipsi_ageP                                  -1.85      1.08    -4.01     0.28 1.00     4835     4450
+# muipsi_sexM                                   0.27      0.82    -1.35     1.94 1.00     5247     5059
+# muipsi_log_training_solves_sc                -0.15      0.60    -1.37     1.08 1.00     4954     4756
+# muipsi_con_pres1                             -0.35      0.17    -0.68    -0.03 1.00    11957     5835
+# muipsi_log_cumulative_count_sc:beh_type       0.14      0.09    -0.05     0.33 1.00     5807     5814
 # 
 # Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 # and Tail_ESS are effective sample size measures, and Rhat is the potential
 # scale reduction factor on split chains (at convergence, Rhat = 1).
-
 
 plot.paw <- plot(conditional_effects(model_eff_paw, categorical =T))
 
@@ -664,24 +705,42 @@ plot.paw <- plot(conditional_effects(model_eff_paw, categorical =T))
 plogis(fixef(model_eff_paw))
 
 # Estimate Est.Error       Q2.5     Q97.5
-# mucontra_Intercept                        0.2152295 0.6812697 0.05436128 0.5466701
-# muipsi_Intercept                          0.6227960 0.6434757 0.34036224 0.8446008
-# mucontra_log_cumulative_count_sc          0.3172380 0.5367231 0.25841005 0.3819967
-# mucontra_beh_type                         0.3364407 0.6290896 0.15282829 0.6045042
-# mucontra_ageP                             0.1998040 0.7909423 0.01649451 0.7767910
-# mucontra_sexM                             0.7207793 0.7365183 0.25255083 0.9525636
-# mucontra_log_training_solves_sc           0.5269247 0.6816645 0.18872361 0.8303833
-# mucontra_con_pres1                        0.3152547 0.5706160 0.20449817 0.4406033
-# mucontra_log_cumulative_count_sc:beh_type 0.6308934 0.5372061 0.56232605 0.6983263
-# muipsi_log_cumulative_count_sc            0.3090984 0.5321901 0.25701952 0.3645382
-# muipsi_beh_type                           0.3409419 0.6000637 0.18933090 0.5409865
-# muipsi_ageP                               0.1456399 0.7386336 0.02014479 0.5577530
-# muipsi_sexM                               0.5687080 0.6893438 0.21284586 0.8632398
-# muipsi_log_training_solves_sc             0.4690129 0.6416331 0.21720930 0.7368661
-# muipsi_con_pres1                          0.4014766 0.5424246 0.32298975 0.4831475
-# muipsi_log_cumulative_count_sc:beh_type   0.5345660 0.5288417 0.47923707 0.5903943
+# mucontra_Intercept                        0.2206443 0.6877222 0.05260478 0.5574230
+# muipsi_Intercept                          0.6268848 0.6475531 0.32995499 0.8438021
+# mucontra_log_cumulative_count_sc          0.3005446 0.5374932 0.24194861 0.3647824
+# mucontra_beh_type                         0.3784702 0.6100715 0.20400785 0.5994214
+# mucontra_ageP                             0.1833949 0.8057779 0.01126864 0.7725462
+# mucontra_sexM                             0.7198579 0.7390987 0.25191313 0.9534225
+# mucontra_log_training_solves_sc           0.5180204 0.6888434 0.17071284 0.8353942
+# mucontra_con_pres1                        0.3031926 0.5727035 0.19235520 0.4304796
+# mucontra_log_cumulative_count_sc:beh_type 0.6185112 0.5307273 0.56025961 0.6745133
+# muipsi_log_cumulative_count_sc            0.2982217 0.5339117 0.24480157 0.3563584
+# muipsi_beh_type                           0.3746617 0.5832316 0.23738700 0.5372547
+# muipsi_ageP                               0.1357253 0.7471216 0.01777644 0.5689064
+# muipsi_sexM                               0.5677363 0.6941111 0.20555707 0.8739921
+# muipsi_log_training_solves_sc             0.4636346 0.6467531 0.20313114 0.7472162
+# muipsi_con_pres1                          0.4126263 0.5423577 0.33532767 0.4919914
+# muipsi_log_cumulative_count_sc:beh_type   0.5353048 0.5234546 0.48867227 0.5807362
 
+exp(fixef(model_eff_paw))
 
+# Estimate Est.Error       Q2.5      Q97.5
+# mucontra_Intercept                        0.2831112  2.202277 0.05552570  1.2594940
+# muipsi_Intercept                          1.6801374  1.837307 0.49243705  5.4021357
+# mucontra_log_cumulative_count_sc          0.4296837  1.162130 0.31917178  0.5742637
+# mucontra_beh_type                         0.6089333  1.564573 0.25629380  1.4963892
+# mucontra_ageP                             0.2245822  4.148744 0.01139707  3.3964968
+# mucontra_sexM                             2.5696171  2.832867 0.33674314 20.4695822
+# mucontra_log_training_solves_sc           1.0747767  2.213816 0.20585492  5.0751200
+# mucontra_con_pres1                        0.4351167  1.340296 0.23816807  0.7558633
+# mucontra_log_cumulative_count_sc:beh_type 1.6213092  1.130957 1.27406903  2.0723221
+# muipsi_log_cumulative_count_sc            0.4249514  1.145516 0.32415530  0.5536596
+# muipsi_beh_type                           0.5991345  1.399414 0.31128108  1.1610160
+# muipsi_ageP                               0.1570395  2.954470 0.01809816  1.3196818
+# muipsi_sexM                               1.3134027  2.269161 0.25874366  6.9360092
+# muipsi_log_training_solves_sc             0.8644006  1.830881 0.25491163  2.9559498
+# muipsi_con_pres1                          0.7024936  1.185113 0.50450073  0.9684706
+# muipsi_log_cumulative_count_sc:beh_type   1.1519481  1.098436 0.95569289  1.3851333
 
 # Average or fixed values for other predictors
 newdata <- data.frame(
@@ -711,10 +770,13 @@ OR_juv_vs_adult <- odds_juvenile / odds_adult
 
 # Posterior summary
 mean(OR_juv_vs_adult)
-# 7.97
+#  8.723502
+
+median(OR_juv_vs_adult)
+#[1] 5.51327
 quantile(OR_juv_vs_adult, c(0.025, 0.975))
-#      2.5%      97.5% 
-#   0.8915073 32.5449541
+# 2.5%     97.5% 
+#   0.852672 35.417501
 
 # 4.4) Making mistakes -----------------------------------------------
 
@@ -730,16 +792,16 @@ model_box_int <- brm(
   control = list(adapt_delta = 0.95)
 )
 
-#save(model_box_int, file="model output/model_box_int.RDA")
-load("model output/model_box_int.RDA")
-#load("model output/model_box_int_min5.RDA") # load this for threshold of 5
+#save(model_box_int, file="model output/model_box_int2.RDA")
+load("model output/model_box_int2.RDA")
+#load("model output/model_box_int_5.RDA") # load this for threshold of 5
 
 r2_bayes(model_box_int)
+
 # # Bayesian R2 with Compatibility Interval
 # 
-# Conditional R2: 0.166 (95% CI [0.122, 0.220])
-# Marginal R2: 0.099 (95% CI [0.029, 0.211])
-
+# Conditional R2: 0.171 (95% CI [0.120, 0.226])
+# Marginal R2: 0.119 (95% CI [0.031, 0.257])
 
 pp_box <- pp_check(model_box_int)
 pp_box
@@ -758,26 +820,39 @@ summary(model_box_int)
 # Multilevel Hyperparameters:
 #   ~Subject (Number of levels: 18) 
 # Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sd(Intercept)     0.52      0.14     0.31     0.85 1.00     2749     4363
+# sd(Intercept)     0.53      0.14     0.31     0.86 1.00     2423     4404
 # 
 # Regression Coefficients:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# Intercept                            0.64      0.25     0.15     1.13 1.00     3893     4390
-# log_cumulative_count_sc             -0.28      0.04    -0.36    -0.21 1.00     8817     5422
-# beh_type                            -0.23      0.17    -0.56     0.10 1.00     4070     4262
-# ageP                                -0.39      0.44    -1.30     0.48 1.00     3563     4247
-# sexM                                -0.58      0.35    -1.28     0.10 1.00     4188     4473
-# log_training_solves_sc              -0.08      0.25    -0.56     0.41 1.00     3169     3860
-# con_pres1                           -0.23      0.09    -0.41    -0.05 1.00    10774     5872
-# log_cumulative_count_sc:beh_type     0.12      0.03     0.05     0.19 1.00     9403     5969
+# Intercept                            0.67      0.26     0.14     1.18 1.00     3584     4168
+# log_cumulative_count_sc             -0.28      0.04    -0.36    -0.21 1.00    10300     5949
+# beh_type                            -0.18      0.14    -0.46     0.09 1.00     3774     4333
+# ageP                                -0.40      0.46    -1.31     0.50 1.00     3314     3939
+# sexM                                -0.59      0.35    -1.29     0.11 1.00     3794     4164
+# log_training_solves_sc              -0.09      0.25    -0.59     0.39 1.00     3437     3803
+# con_pres1                           -0.28      0.09    -0.46    -0.11 1.00     9737     4959
+# log_cumulative_count_sc:beh_type     0.10      0.03     0.04     0.15 1.00    10734     5551
 # 
 # Further Distributional Parameters:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# shape     1.53      0.10     1.34     1.74 1.00    11450     5683
+# shape     1.47      0.10     1.29     1.68 1.00    11318     5917
 # 
 # Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 # and Tail_ESS are effective sample size measures, and Rhat is the potential
 # scale reduction factor on split chains (at convergence, Rhat = 1).
+
+exp(fixef(model_box_int))
+
+# Estimate Est.Error      Q2.5     Q97.5
+# Intercept                        1.9460963  1.295214 1.1480936 3.2540399
+# log_cumulative_count_sc          0.7553938  1.038650 0.7003411 0.8131538
+# beh_type                         0.8325208  1.145986 0.6330650 1.0951892
+# ageP                             0.6713735  1.578417 0.2692780 1.6413211
+# sexM                             0.5561044  1.422363 0.2748573 1.1196859
+# log_training_solves_sc           0.9155800  1.280989 0.5551846 1.4837501
+# con_pres1                        0.7531977  1.094438 0.6315961 0.8988917
+# log_cumulative_count_sc:beh_type 1.1018812  1.028897 1.0427920 1.1651588
+
 
 plot.mistakes <- plot(conditional_effects(model_box_int))
 
@@ -785,6 +860,23 @@ plot.mistakes <- plot(conditional_effects(model_box_int))
 # no overall effect of boldness, age, sex, training solves
 # shy individuals make more mistakes initially compared to bolder individuals, but improve over time, while bold individuals are consistent in their mistake rate
 
+
+d <- as_draws_df(model_box_int)
+b0 <- d$b_beh_type
+b1 <- d$`b_log_cumulative_count_sc:beh_type`
+cp <- mean(log(solving_data$cumulative_count))
+s  <- sd(log(solving_data$cumulative_count))
+sapply(c(1, 10, 100, 500), function(v) {
+  x <- exp(b0 + b1 * (log(v) - cp) / s)
+  c(solves = v, median = median(x), lo = quantile(x, .025), hi = quantile(x, .975))
+})
+
+# 
+# [,1]       [,2]        [,3]        [,4]
+# solves   1.0000000 10.0000000 100.0000000 500.0000000
+# median   0.6146575  0.7210718   0.8440580   0.9440876
+# lo.2.5%  0.4573270  0.5494481   0.6439328   0.7088645
+# hi.97.5% 0.8374168  0.9551448   1.1175567   1.2697872
 
 # 4.5)  reaction after solve  -------------------------------------------------------------------
 
@@ -800,16 +892,15 @@ model_stay <- brm(
   control = list(adapt_delta = 0.95)
 )
 
-#save(model_stay, file="model output/model_stay.RDA")
-load("model output/model_stay.RDA")
+#save(model_stay, file="model output/model_stay2.RDA")
+load("model output/model_stay2.RDA")
 #load("model output/model_stay_min5.RDA") # load this model output for a treshold of 5
 
 r2_bayes(model_stay)
 # # Bayesian R2 with Compatibility Interval
 # 
-# Conditional R2: 0.688 (95% CI [0.673, 0.703])
-# Marginal R2: 0.595 (95% CI [0.488, 0.647])
-
+# Conditional R2: 0.686 (95% CI [0.670, 0.700])
+# Marginal R2: 0.592 (95% CI [0.480, 0.644])
 
 pp_stay <- pp_check(model_stay)
 pp_stay
@@ -825,22 +916,34 @@ summary(model_stay)
 # Multilevel Hyperparameters:
 #   ~Subject (Number of levels: 18) 
 # Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# sd(Intercept)     2.41      0.69     1.43     4.09 1.00     3233     4601
+# sd(Intercept)     2.45      0.71     1.43     4.17 1.00     3045     4690
 # 
 # Regression Coefficients:
 #   Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-# Intercept                            3.22      1.21     0.74     5.55 1.00     3465     4022
-# log_cumulative_count_sc              2.68      0.21     2.30     3.10 1.00     9878     5856
-# beh_type                             2.00      0.87     0.33     3.77 1.00     4161     4653
-# ageP                                -4.08      2.29    -9.03     0.14 1.00     3767     3851
-# sexM                                -0.70      1.70    -4.19     2.63 1.00     3558     3765
-# log_training_solves_sc              -1.15      1.16    -3.47     1.12 1.00     3895     3795
-# con_pres1                           -0.33      0.36    -1.02     0.40 1.00    11871     5763
-# log_cumulative_count_sc:beh_type    -1.82      0.31    -2.47    -1.24 1.00    10091     6338
+# Intercept                            3.02      1.23     0.49     5.44 1.00     4331     4084
+# log_cumulative_count_sc              2.76      0.22     2.35     3.19 1.00    10037     6105
+# beh_type                             1.61      0.74     0.18     3.14 1.00     4310     4299
+# ageP                                -4.11      2.33    -9.07     0.28 1.00     4077     3765
+# sexM                                -0.63      1.71    -4.03     2.80 1.00     4162     4130
+# log_training_solves_sc              -1.17      1.16    -3.56     1.05 1.00     4188     4292
+# con_pres1                           -0.13      0.36    -0.84     0.59 1.00    11605     5930
+# log_cumulative_count_sc:beh_type    -1.51      0.26    -2.03    -1.03 1.00     8210     5644
 # 
 # Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
 # and Tail_ESS are effective sample size measures, and Rhat is the potential
 # scale reduction factor on split chains (at convergence, Rhat = 1).
+
+exp(fixef(model_stay))
+
+# Estimate Est.Error         Q2.5       Q97.5
+# Intercept                        20.54165931  3.436049 1.631185e+00 229.8586951
+# log_cumulative_count_sc          15.82588056  1.240910 1.052516e+01  24.3716679
+# beh_type                          4.98414335  2.101855 1.198401e+00  23.1636290
+# ageP                              0.01647614 10.295327 1.156074e-04   1.3247669
+# sexM                              0.53209339  5.538675 1.776874e-02  16.4346267
+# log_training_solves_sc            0.30890760  3.192185 2.834623e-02   2.8692880
+# con_pres1                         0.87501248  1.437057 4.302601e-01   1.7952471
+# log_cumulative_count_sc:beh_type  0.22139832  1.296728 1.309295e-01   0.3583747
 
 
 plot.stay <- plot(conditional_effects(model_stay))
@@ -851,7 +954,21 @@ plot.stay <- plot(conditional_effects(model_stay))
 # no effect of sex or training solves
 # bolder individuals stay from the start, shier individuals imporove with increasing experience
 
+d <- as_draws_df(model_stay)   # use your model object name
+b0 <- d$b_beh_type
+b1 <- d$`b_log_cumulative_count_sc:beh_type`
+cp <- mean(log(solving_data$cumulative_count))
+s  <- sd(log(solving_data$cumulative_count))
+sapply(c(1, 10, 100, 500), function(v) {
+  x <- exp(b0 + b1 * (log(v) - cp) / s)
+  c(solves = v, median = median(x), lo = quantile(x, .025), hi = quantile(x, .975))
+})
 
+# [,1]      [,2]        [,3]        [,4]
+# solves      1.00000  10.00000 100.0000000 500.0000000
+# median    515.60800  43.65238   3.7198004   0.6690742
+# lo.2.5%    73.53532   9.97896   0.8961566   0.1290175
+# hi.97.5% 5338.02046 262.99137  17.6380066   3.3212920
 
 # 5) Tables ---------------------------------------------------------------
 
@@ -876,39 +993,35 @@ tidy_success <- tidy_success %>%
                   "munoyes_(Intercept)" = "Intercept [consume]",
                   "muyesno_(Intercept)" = "Intercept [solve]",
                   "muyesyes_(Intercept)" = "Intercept [solve, consume]",
-                  "munoyes_log_cumulative_visits" = "Log cumulative visits [consume]",
+                  
+                  "munoyes_log_cumulative_visits_c" = "Cumulative visits (log) [consume]",
                   "munoyes_beh_type" = "Boldness [consume]",
                   "munoyes_ageP"  = "Age (J:A) [consume]",
                   "munoyes_sexM"  = "Sex (M:F) [consume]",
-                  "munoyes_log_training_solves" = "Log # of training solve [consume]",
+                  "munoyes_log_training_solves" = "# training solves (log) [consume]",
                   "munoyes_scaletotal_time_present" = "Visit duration [consume]",
-                  "munoyes_con_pres1" = "Conspecific presence [consume]",
-                  "munoyes_log_cumulative_visits:beh_type" = "Cumulative visits (log) × Boldness [consume]",
+                  "munoyes_con_pres1" = "Conspecific presence at arrival [consume]",
+                  "munoyes_log_cumulative_visits_c:beh_type" = "Cumulative visits (log) × Boldness [consume]",
                   
-                  
-                  "muyesno_log_cumulative_visits" = "Log cumulative visits [solve]",
+                  "muyesno_log_cumulative_visits_c" = "Cumulative visits (log) [solve]",
                   "muyesno_beh_type" = "Boldness [solve]",
                   "muyesno_ageP"  = "Age (J:A) [solve]",
                   "muyesno_sexM"  = "Sex (M:F) [solve]",
-                  "muyesno_log_training_solves" = "Log # of training solve [solve]",
+                  "muyesno_log_training_solves" = "# training solves (log) [solve]",
                   "muyesno_scaletotal_time_present" = "Visit duration [solve]",
-                  "muyesno_con_pres1" = "Conspecific presence [solve]",
-                  "muyesno_log_cumulative_visits:beh_type" = "Cumulative visits (log) × Boldness [solve]",
+                  "muyesno_con_pres1" = "Conspecific presence at arrival [solve]",
+                  "muyesno_log_cumulative_visits_c:beh_type" = "Cumulative visits (log) × Boldness [solve]",
                   
-                  "muyesyes_log_cumulative_visits" = "Log cumulative visits [solve, consume]",
+                  "muyesyes_log_cumulative_visits_c" = "Cumulative visits (log) [solve, consume]",
                   "muyesyes_beh_type" = "Boldness [solve, consume]",
                   "muyesyes_ageP"  = "Age (J:A) [solve, consume]",
                   "muyesyes_sexM"  = "Sex (M:F) [solve, consume]",
-                  "muyesyes_log_training_solves" = "Log # of training solve, consume [solve, consume]",
+                  "muyesyes_log_training_solves" = "# training solves (log) [solve, consume]",
                   "muyesyes_scaletotal_time_present" = "Visit duration [solve, consume]",
-                  "muyesyes_con_pres1" = "Conspecific presence [solve, consume]",
-                  "muyesyes_log_cumulative_visits:beh_type" = "Cumulative visits (log) × Boldness [solve, consume]"
-                  
-                  
-
+                  "muyesyes_con_pres1" = "Conspecific presence at arrival [solve, consume]",
+                  "muyesyes_log_cumulative_visits_c:beh_type" = "Cumulative visits (log) × Boldness [solve, consume]"
     )
   )
-
 
 
 table_success <- tidy_success %>%
@@ -926,7 +1039,7 @@ ft_success <- flextable(table_success) %>%
 doc <- read_docx() %>%
   body_add_flextable(ft_success)
 
-print(doc, target = "Tables output/model_success.docx")
+print(doc, target = "Tables output/model_success_5.docx")
 
 
 
@@ -1084,50 +1197,49 @@ doc <- read_docx() %>%
 
 print(doc, target = "Tables output/model_stay_OR.docx")
 
-# MISTAKES
-
+# MANIPULATION ERRORS (negative binomial, log link) -> incidence rate ratios
 tidy_box <- tidy(
   model_box_int,
   effects = "fixed",
   conf.int = TRUE,
   conf.level = 0.95
 ) %>%
-  select(-std.error)
+  mutate(
+    IRR      = exp(estimate),
+    CI_low   = exp(conf.low),
+    CI_high  = exp(conf.high)
+  ) %>%
+  select(-estimate, -std.error, -conf.low, -conf.high)
 
 tidy_box <- tidy_box %>%
   mutate(
     term = dplyr::recode(term,
-                  "Intercept" = "Intercept",
-                  "log_cumulative_count_sc" = "Cumulative solves (log)",
-                  "beh_type" = "Boldness",
-                  "ageP" = "Age (J:A)",
-                  "sexM" = "Sex (M:F)",
-                  "log_training_solves_sc" = "# training solves (log)",
-                  "con_pres1" = "Conspecific presence",
-                  "log_cumulative_count_sc:beh_type" =
-                    "Cumulative solves (log) × Boldness"
+                         "Intercept" = "Intercept",
+                         "log_cumulative_count_sc" = "Cumulative solves (log)",
+                         "beh_type" = "Boldness",
+                         "ageP" = "Age (J:A)",
+                         "sexM" = "Sex (M:F)",
+                         "log_training_solves_sc" = "# training solves (log)",
+                         "con_pres1" = "Conspecific presence",
+                         "log_cumulative_count_sc:beh_type" =
+                           "Cumulative solves (log) × Boldness"
     )
   )
 
-
 table_box <- tidy_box %>%
-  filter(term != "Intercept") %>%   # recommended
+  filter(term != "Intercept") %>%
   select(
     Predictor = term,
-    `β` = estimate,
-    `Lower 95% CI` = conf.low,
-    `Upper 95% CI` = conf.high
+    `Incidence rate ratio (IRR)` = IRR,
+    `Lower 95% CI` = CI_low,
+    `Upper 95% CI` = CI_high
   ) %>%
-  mutate(across(where(is.numeric), round, 2))
+  mutate(across(where(is.numeric), ~ round(.x, 2)))
 
+ft_box <- flextable(table_box) %>% autofit()
 
-ft_box <- flextable(table_box) %>%
-  autofit()
-
-doc <- read_docx() %>%
-  body_add_flextable(ft_box)
-
-print(doc, target = "Tables output/model_box_int.docx")
+doc <- read_docx() %>% body_add_flextable(ft_box)
+print(doc, target = "Tables output/model_box_int_IRR.docx")
 
 
 
@@ -1142,13 +1254,18 @@ print(doc, target = "Tables output/model_box_int.docx")
 
 plot.success <- plot(conditional_effects(model_success, categorical=T))
 
-p1.panel.a <- plot.success$`log_cumulative_visits:cats__`+
+p1.panel.a <- plot.success$`log_cumulative_visits_c:cats__` +
   geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.1, color = NA) +
   theme_bw() +
   ylim(c(0,1))+
+  scale_x_continuous(
+    breaks = log(c(1, 10, 100, 350)) - mean(log(visit_data_success$cumulative_visits)),
+    labels = c(1, 10, 100, 350)
+  )+
+#  labs(x = "Cumulative visits (log scale)", ...)+
   labs(
-    x = "Cumulative visits (log)",
+    x = "Cumulative visits\n(log scale)",
     y = "Predicted probability"
   ) +
   scale_color_manual(values = c("yes_yes"= "#cb5357", "yes_no"= "#a361c7", "no_yes" = "#4aac8d", "no_no"= "#bd893d"),labels=c("none", "consume", "solve", "solve & consume"), name = "Behavior") +
@@ -1162,7 +1279,7 @@ p1.panel.b <- plot.success$`beh_type:cats__`+
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.1, color = NA) +
   theme_bw() +
   labs(
-    x = "Boldness",
+    x = "Boldness\n ",
     y = ""
   ) +
   scale_color_manual(values = c("yes_yes"= "#cb5357", "yes_no"= "#a361c7", "no_yes" = "#4aac8d", "no_no"= "#bd893d"),labels=c("none", "consume", "solve", "solve & consume"), name = "Behavior") +
@@ -1182,7 +1299,7 @@ p1.panel.c <- plot.success$`total_time_present:cats__`+
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.1, color = NA) +
   theme_bw() +
   labs(
-    x = "Visit duration",
+    x = "Visit duration (s)\n ",
     y = ""
   ) +
   scale_color_manual(values = c("yes_yes"= "#cb5357", "yes_no"= "#a361c7", "no_yes" = "#4aac8d", "no_no"= "#bd893d"),labels=c("none", "consume", "solve", "solve & consume"), name = "Behavior") +
@@ -1205,33 +1322,34 @@ get_preds <- function(model, beh_values) {
   pred_list <- lapply(beh_values, function(x) {
     ce <- conditional_effects(
       model,
-      effects = "log_cumulative_visits",
-      conditions = list(beh_type = x),
+      effects = "log_cumulative_visits_c",
+      conditions = data.frame(beh_type = x),
       categorical = TRUE
     )
-    
-    df <- ce[[1]] %>%
-      rename(success_level = cats__) %>%   # outcome category
+    ce[[1]] %>%
+      rename(success_level = cats__) %>%
       mutate(beh_type_val = x)
-    
-    df
   })
-  
   do.call(rbind, pred_list)
 }
 
+beh.type.q <- as.numeric(quantile(subject_data$beh_type, c(0.1, 0.5, 0.9)))
 df_success <- get_preds(model_success, beh.type.q)
 
 p1.row2 <- ggplot(df_success,
-       aes(x = log_cumulative_visits,
-           y = estimate__,
-           color = factor(beh_type_val),
-           fill = factor(beh_type_val),
-           group = factor(beh_type_val))) +
+                  aes(x = log_cumulative_visits_c,
+                      y = estimate__,
+                      color = factor(beh_type_val),
+                      fill = factor(beh_type_val),
+                      group = factor(beh_type_val))) +
   geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__),
               alpha = 0.2, color = NA) +
-  facet_wrap(~ success_level, 
+  scale_x_continuous(
+    breaks = log(c(1, 10, 100, 350)) - mean(log(visit_data_success$cumulative_visits)),
+    labels = c(1, 10, 100, 350)
+  ) +
+  facet_wrap(~ success_level,
              labeller = labeller(
                success_level = c(
                  no_no = "None",
@@ -1239,33 +1357,22 @@ p1.row2 <- ggplot(df_success,
                  yes_no = "Solve",
                  yes_yes = "Solve & consume"
                )
-             ), nrow=1)+
+             ), nrow = 1) +
   theme_bw() +
+  labs(x = "Cumulative visits (log scale)",
+       y = "Predicted probability") +
+  scale_color_manual(values = c("#fdd0a2", "#fd8d3c", "#a63603"),
+                     labels = c("risk-averse", "medium", "bold"), name = "Boldness") +
+  scale_fill_manual(values = c("#fdd0a2", "#fd8d3c", "#a63603"),
+                    labels = c("risk-averse", "medium", "bold"), name = "Boldness") +
   theme(
-    legend.position = c(0.32, 0.85), # relative coordinates (x, y) inside the plot
-    legend.background = element_blank(),
+    legend.position = "inside",
+    legend.position.inside = c(0.32, 0.85),
+    legend.background = element_rect(fill = "white", color = NA),
+    legend.key = element_rect(fill = "white", color = NA),
     legend.title = element_text(size = 10),
     legend.text = element_text(size = 9)
-  )+
-  labs(x = "Cumulative visits (log)",
-       y = "Predicted probability",
-       color = "Behavior type",
-       fill = "Behavior type")+
-  scale_color_manual(values = c(
-    "#fdd0a2",
-     "#fd8d3c",
-    "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness") +
-  scale_fill_manual(values = c(
-     "#fdd0a2",
-     "#fd8d3c",
-   "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness")+
-  theme(
-  legend.background = element_rect(fill = "white", color = NA),
-  legend.key = element_rect(fill = "white", color = NA)
-)
-  
+  )
 
 # panel d: latency
 conditions = list(beh_type = beh.type.q)
@@ -1283,9 +1390,12 @@ df_latency <- ce$log_cumulative_visits$data
 df_latency <- df_latency %>%
   mutate(beh_type_label = factor(beh_type,
                                  levels = beh.type.q,
-                                 labels = c("Shy", "Medium", "Bold")))
+                                 labels = c("risk-averse", "medium", "bold")))
 
 
+
+range(df_latency$log_cumulative_visits)
+range(log(visit_data_latency$cumulative_visits))   # what the model actually saw
 
 p1.panel.d <- ggplot(df_latency,
        aes(x = log_cumulative_visits,
@@ -1294,22 +1404,26 @@ p1.panel.d <- ggplot(df_latency,
            fill = beh_type_label,
            group = beh_type_label)) +
   geom_line(linewidth = 1.2) +
+  scale_x_continuous(
+    breaks = log(c(1, 10, 100, 350)),
+    labels = c(1, 10, 100, 350)
+  ) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__),
               alpha = 0.1, color = NA) +
   theme_bw()+
   labs(
-    x = "Cumulative visits (log)",
+    x = "Cumulative visits\n(log scale)",
     y = "Latency to first solve"
   )  +scale_color_manual(values = c(
     "#fdd0a2",
     "#fd8d3c",
     "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness") +
+  ), labels = c("risk-averse", "medium", "bold"), name="Boldness") +
   scale_fill_manual(values = c(
     "#fdd0a2",
     "#fd8d3c",
     "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness")+
+  ), labels = c("risk-averse", "medium", "bold"), name="Boldness")+
   theme(legend.position = "none")
 
 
@@ -1365,8 +1479,12 @@ p2.panel.a <- plot.eff.paw$`log_cumulative_count_sc:cats__`+
   geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.05, color = NA) +
   theme_bw() +
+  scale_x_continuous(
+    breaks = (log(c(1, 10, 50, 100, 500)) - cp) / s,
+    labels = c(1, 10, 50, 100, 500)
+  ) +
   labs(
-    x = "Log # of cumulative solves",
+    x = "Cumulative solves (log scale)",
     y = "Probability of paw choice"
   ) +
   scale_color_manual(values = c( "#00441b","#a0da94", "#5fb95f"), labels=c("both", "contralateral", "ipsilateral"), name = "Paw choice") +
@@ -1435,16 +1553,20 @@ df_combined <- bind_rows(pred_list)
 df_combined <- df_combined %>%
   mutate(beh_type_label = factor(beh_type_val,
                                  levels = beh.type.q,
-                                 labels = c("Shy", "Medium", "Bold")))
+                                 labels = c("risk-averse", "medium", "bold")))
 
 # Plot all curves in one panel
 p2.panel.c <- ggplot(df_combined, aes(x = log_cumulative_count_sc, y = estimate__, color = beh_type_label, fill = beh_type_label)) +
   geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.2, color = NA) +
   theme_bw() +
+  scale_x_continuous(
+    breaks = (log(c(1, 10, 50, 100, 500)) - cp) / s,
+    labels = c(1, 10, 50, 100, 500)
+  ) +
   labs(
-    x = "Log # of cumulative solves",
-    y = "# of manipulation errors \n between solves",
+    x = "Cumulative solves (log scale)",
+    y = "Manipulation errors \n between solves",
     color = "Boldness",
     fill = "Boldness"
   ) +
@@ -1475,15 +1597,19 @@ df_combined <- bind_rows(pred_list)
 df_combined <- df_combined %>%
   mutate(beh_type_label = factor(beh_type_val,
                                  levels = beh.type.q,
-                                 labels = c("Shy", "Medium", "Bold")))
+                                 labels = c("Risk-averse", "Medium", "Bold")))
 
 # Plot all curves in one panel
 p2.panel.d <- ggplot(df_combined, aes(x = log_cumulative_count_sc, y = estimate__, color = beh_type_label, fill = beh_type_label)) +
   geom_line(linewidth = 1.2) +
   geom_ribbon(aes(ymin = lower__, ymax = upper__), alpha = 0.2, color = NA) +
   theme_bw() +
+  scale_x_continuous(
+    breaks = (log(c(1, 10, 50, 100, 500)) - cp) / s,
+    labels = c(1, 10, 50, 100, 500)
+  )+
   labs(
-    x = "Log # of cumulative solves",
+    x = "Cumulative solves (log scale)",
     y = "Probability of staying \n after solve",
     color = "Boldness",
     fill = "Boldness"
@@ -1528,34 +1654,38 @@ SIfig.row1 <- ggplot(df_paw_choice,
                )
              ), nrow=1)+
   theme_bw() +
+  scale_x_continuous(
+    breaks = (log(c(1, 10, 50, 100, 500)) - cp) / s,
+    labels = c(1, 10, 50, 100, 500)
+  ) +
   theme(
     legend.position = c(0.55, 0.75), # relative coordinates (x, y) inside the plot
     legend.background = element_blank(),
     legend.title = element_text(size = 10),
     legend.text = element_text(size = 9)
   )+
-  labs(x = "Log # of cumulative solves",
+  labs(x = "Cumulative solves (log scale)",
        y = "Predicted probability",
-       color = "Behavior type",
-       fill = "Behavior type")+
+       color = "Boldness",
+       fill = "Boldness")+
   scale_color_manual(values = c(
     "#fdd0a2",
     "#fd8d3c",
     "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness") +
+  ), labels = c("risk-averse", "medium", "bold"), name="Boldness") +
   scale_fill_manual(values = c(
     "#fdd0a2",
     "#fd8d3c",
     "#a63603"
-  ), labels = c("shy", "medium", "bold"), name="Boldness")+
+  ), labels = c("risk-averse", "medium", "bold"), name="Boldness")+
   theme(
     legend.background = element_rect(fill = "white", color = NA),
     legend.key = element_rect(fill = "white", color = NA)
   )
 
+SIfig.row1
 
-
-ggsave("Figures output/behavioral skill_supplementary figure.tiff", units='in', width=9, height=3.5)
+ggsave("Figures output/behavioral skill_supplementary figure2.tiff", units='in', width=9, height=3.5)
 
 
 
